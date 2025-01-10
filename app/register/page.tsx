@@ -3,11 +3,11 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import axios from "axios"
 import { Button } from "@/components/ui"
 import { Input } from "@/components/ui"
 import { Label } from "@/components/ui"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
-import { Switch } from "@/components/ui"
 import Navbar from "@/components/navbar"
 
 export default function RegisterPage() {
@@ -17,17 +17,15 @@ export default function RegisterPage() {
     email: '',
     phone: '',
     age: '',
-    diabetes: false,
-    cholesterol: '',
-    bloodPressure: '',
-    smoking: false,
-    heartRate: '',
+    deviceId: '',
     password: '',
     confirmPassword: ''
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
+  // Form validation function
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
@@ -35,9 +33,7 @@ export default function RegisterPage() {
     if (!formData.email) newErrors.email = 'Email is required'
     if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid'
     if (!formData.age) newErrors.age = 'Age is required'
-    if (!formData.cholesterol) newErrors.cholesterol = 'Cholesterol rate is required'
-    if (!formData.bloodPressure) newErrors.bloodPressure = 'Blood pressure is required'
-    if (!formData.heartRate) newErrors.heartRate = 'Heart rate is required'
+    if (!formData.deviceId) newErrors.deviceId = 'Device ID is required'
     if (!formData.password) newErrors.password = 'Password is required'
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match'
@@ -47,12 +43,35 @@ export default function RegisterPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (validateForm()) {
-      // Here you would typically send the data to your backend
-      console.log('Form submitted:', formData)
-      router.push('/login')
+      setIsLoading(true)
+      try {
+        const response = await axios.post("http://localhost:7000/api/auth/signup", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // Enable if using cookies for authentication
+        })
+
+        if (response.status === 201) {
+          alert("Registration successful!")
+          router.push("/login")
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error during registration:", error.message)
+          alert(error.message || "Registration failed. Please try again.")
+        } else {
+          console.error("Unknown error during registration:", error)
+          alert("An unknown error occurred. Please try again.")
+        }
+      }finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -72,7 +91,7 @@ export default function RegisterPage() {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className={errors.name ? "border-red-500" : ""}
                   />
                   {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
@@ -84,7 +103,7 @@ export default function RegisterPage() {
                     id="email"
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className={errors.email ? "border-red-500" : ""}
                   />
                   {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
@@ -96,7 +115,7 @@ export default function RegisterPage() {
                     id="phone"
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
 
@@ -106,66 +125,21 @@ export default function RegisterPage() {
                     id="age"
                     type="number"
                     value={formData.age}
-                    onChange={(e) => setFormData({...formData, age: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                     className={errors.age ? "border-red-500" : ""}
                   />
                   {errors.age && <p className="text-sm text-red-500">{errors.age}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="cholesterol">Cholesterol Rate *</Label>
+                  <Label htmlFor="deviceId">Device ID *</Label>
                   <Input
-                    id="cholesterol"
-                    type="number"
-                    value={formData.cholesterol}
-                    onChange={(e) => setFormData({...formData, cholesterol: e.target.value})}
-                    className={errors.cholesterol ? "border-red-500" : ""}
+                    id="deviceId"
+                    value={formData.deviceId}
+                    onChange={(e) => setFormData({ ...formData, deviceId: e.target.value })}
+                    className={errors.deviceId ? "border-red-500" : ""}
                   />
-                  {errors.cholesterol && <p className="text-sm text-red-500">{errors.cholesterol}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bloodPressure">Blood Pressure *</Label>
-                  <Input
-                    id="bloodPressure"
-                    placeholder="120/80"
-                    value={formData.bloodPressure}
-                    onChange={(e) => setFormData({...formData, bloodPressure: e.target.value})}
-                    className={errors.bloodPressure ? "border-red-500" : ""}
-                  />
-                  {errors.bloodPressure && <p className="text-sm text-red-500">{errors.bloodPressure}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="heartRate">Heart Rate (BPM) *</Label>
-                  <Input
-                    id="heartRate"
-                    type="number"
-                    value={formData.heartRate}
-                    onChange={(e) => setFormData({...formData, heartRate: e.target.value})}
-                    className={errors.heartRate ? "border-red-500" : ""}
-                  />
-                  {errors.heartRate && <p className="text-sm text-red-500">{errors.heartRate}</p>}
-                </div>
-
-                <div className="space-y-2 flex items-center">
-                  <div className="flex-1">
-                    <Label>Diabetes</Label>
-                    <Switch
-                      checked={formData.diabetes}
-                      onCheckedChange={(checked) => setFormData({...formData, diabetes: checked})}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2 flex items-center">
-                  <div className="flex-1">
-                    <Label>Smoking</Label>
-                    <Switch
-                      checked={formData.smoking}
-                      onCheckedChange={(checked) => setFormData({...formData, smoking: checked})}
-                    />
-                  </div>
+                  {errors.deviceId && <p className="text-sm text-red-500">{errors.deviceId}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -174,7 +148,7 @@ export default function RegisterPage() {
                     id="password"
                     type="password"
                     value={formData.password}
-                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className={errors.password ? "border-red-500" : ""}
                   />
                   {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
@@ -186,15 +160,17 @@ export default function RegisterPage() {
                     id="confirmPassword"
                     type="password"
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     className={errors.confirmPassword ? "border-red-500" : ""}
                   />
-                  {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
+                  {errors.confirmPassword && (
+                    <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+                  )}
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700">
-                Register
+              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700" disabled={isLoading}>
+                {isLoading ? "Registering..." : "Register"}
               </Button>
 
               <p className="text-center text-gray-600">
@@ -210,4 +186,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-
