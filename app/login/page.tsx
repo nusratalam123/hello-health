@@ -3,10 +3,8 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/components/ui"
-import { Input } from "@/components/ui"
-import { Label } from "@/components/ui"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
+import axios from "axios"
+import { Button, Input, Label, Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
 import Navbar from "@/components/navbar"
 
 export default function LoginPage() {
@@ -16,6 +14,9 @@ export default function LoginPage() {
     password: ''
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -27,12 +28,41 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (validateForm()) {
-      // Here you would typically authenticate with your backend
-      console.log('Login attempted:', formData)
-      router.push('/dashboard')
+      setIsLoading(true)
+      setErrorMessage(null)
+      setSuccessMessage(null)
+
+      try {
+        const response = await axios.post("http://localhost:7000/api/auth/login", formData, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true, // Enable if backend uses cookies
+        })
+
+        if (response.status === 200) {
+          // Store token in local storage
+          localStorage.setItem('token', response.data.data.token)
+
+          // Display success message and redirect
+          setSuccessMessage("Login successful!")
+          setTimeout(() => {
+            router.push('/') // Redirect to homepage or dashboard
+          }, 1000)
+        }
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          // Handle the error as an instance of Error
+          console.log((error as Error).message);
+        } else {
+          // Handle the error as an unknown type
+          console.log('An unknown error occurred.');
+        }
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -46,12 +76,15 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {errorMessage && <p className="text-sm text-red-500 text-center">{errorMessage}</p>}
+              {successMessage && <p className="text-sm text-green-500 text-center">{successMessage}</p>}
+
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className={errors.name ? "border-red-500" : ""}
                 />
                 {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
@@ -63,14 +96,14 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className={errors.password ? "border-red-500" : ""}
                 />
                 {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
               </div>
 
-              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700">
-                Login
+              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
 
               <p className="text-center text-gray-600">
@@ -86,4 +119,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
