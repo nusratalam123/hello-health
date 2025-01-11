@@ -57,7 +57,7 @@ export default function RegisterPage() {
           withCredentials: true, // Enable if using cookies for authentication
         })
 
-        if (response.status === 201) {
+        if (response.status === 200) {
           alert("Registration successful!")
           router.push("/login")
         }
