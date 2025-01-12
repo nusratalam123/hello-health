@@ -29,8 +29,21 @@ export default function HealthSuggestionsPage() {
   useEffect(() => {
     const fetchHealthData = async () => {
       try {
+        const token = localStorage.getItem('token');
+        console.log("token",token)
+        let userID: string | undefined; // Declare userID once
 
-        const response = await axios.get('http://localhost:7000/api/health-data/single', {
+        if (token) {
+          const decodedToken = jwtDecode(token) as { id: string };
+          userID = decodedToken.id; // Assign to the existing userID variable
+          console.log("Decoded UserID:", userID);
+        }
+
+        if (!userID) {
+          console.error("User ID is undefined. Cannot make the request.");
+          throw new Error("User ID not found in token");
+        }
+        const response = await axios.get(`http://localhost:7000/api/health-data/single/${userID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
