@@ -1,62 +1,67 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Navbar from "@/components/navbar"
-import { SearchBar } from "@/components/search-bar"
-import { DoctorCard } from "@/components/doctor-card"
-import { Button } from "@/components/ui"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui"
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import Navbar from "@/components/navbar";
+import { SearchBar } from "@/components/search-bar";
+import { DoctorCard } from "@/components/doctor-card";
+import { Button } from "@/components/ui";
 
-// Mock data for doctors
-const doctors = Array(24).fill(null).map((_, i) => ({
-  id: i + 1,
-  name: `Dr. John Doe ${i + 1}`,
-  specialty: 'Cardiologist',
-  hospital: 'Heart Care Hospital',
-  image: '/placeholder.svg',
-}))
+
+// Define Doctor type
+interface Doctor {
+  _id: string;
+  name: string;
+  specialty: string;
+  hospital: string;
+  image: string;
+}
 
 export default function AppointmentsPage() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filteredDoctors, setFilteredDoctors] = useState(doctors)
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
-  const [selectedDoctor, setSelectedDoctor] = useState<typeof doctors[0] | null>(null)
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
+  const doctorsPerPage = 12;
+  const totalPages = Math.ceil(filteredDoctors.length / doctorsPerPage);
 
-  const doctorsPerPage = 12
-  const totalPages = Math.ceil(filteredDoctors.length / doctorsPerPage)
+  // Fetch doctors from the backend when the component mounts
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get('http://localhost:7000/api/doctor/list');
+        setDoctors(response.data.doctors);
+        setFilteredDoctors(response.data.doctors); // Set filteredDoctors initially to all doctors
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+      }
+    };
 
+    fetchDoctors();
+  }, []);
+
+  // Handle search functionality
   const handleSearch = (searchParams: { location: string; hospital: string; designation: string }) => {
-    const filtered = doctors.filter(doctor => 
-      doctor.hospital.toLowerCase().includes(searchParams.hospital.toLowerCase()) &&
-      doctor.specialty.toLowerCase().includes(searchParams.designation.toLowerCase())
-      // Note: We don't have location data in our mock data, so we're not filtering by it
-    )
-    setFilteredDoctors(filtered)
-    setCurrentPage(1)
-  }
+    const filtered = doctors.filter(
+      (doctor) =>
+        doctor.hospital.toLowerCase().includes(searchParams.hospital.toLowerCase()) &&
+        doctor.specialty.toLowerCase().includes(searchParams.designation.toLowerCase())
+    );
+    setFilteredDoctors(filtered);
+    setCurrentPage(1);
+  };
 
-  const handleBookAppointment = (doctor: typeof doctors[0]) => {
-    setSelectedDoctor(doctor)
-    setIsBookingModalOpen(true)
-  }
+  // Handle booking appointment - navigate to BookAppointmentPage
+  const handleBookAppointment = (doctor: Doctor) => {
+    router.push(`/appointments/${doctor._id}`);
+  };
 
-  const confirmBooking = () => {
-    // Here you would typically send the booking data to your backend
-    console.log('Booking confirmed for:', selectedDoctor)
-    setIsBookingModalOpen(false)
-  }
-
+  // Paginate doctors
   const paginatedDoctors = filteredDoctors.slice(
     (currentPage - 1) * doctorsPerPage,
     currentPage * doctorsPerPage
-  )
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +72,7 @@ export default function AppointmentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {paginatedDoctors.map((doctor) => (
             <DoctorCard
-              key={doctor.id}
+              key={doctor._id}
               name={doctor.name}
               specialty={doctor.specialty}
               hospital={doctor.hospital}
@@ -82,8 +87,8 @@ export default function AppointmentsPage() {
               <Button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                variant={currentPage === page ? "default" : "outline"}
-                className={currentPage === page ? "bg-red-600 hover:bg-red-700" : ""}
+                variant={currentPage === page ? 'default' : 'outline'}
+                className={currentPage === page ? 'bg-red-600 hover:bg-red-700' : ''}
               >
                 {page}
               </Button>
@@ -91,21 +96,6 @@ export default function AppointmentsPage() {
           </div>
         )}
       </main>
-      <Dialog open={isBookingModalOpen} onOpenChange={setIsBookingModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Appointment</DialogTitle>
-            <DialogDescription>
-              You are about to book an appointment with {selectedDoctor?.name}.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsBookingModalOpen(false)}>Cancel</Button>
-            <Button onClick={confirmBooking} className="bg-red-600 hover:bg-red-700">Confirm Booking</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
-  )
+  );
 }
-
