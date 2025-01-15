@@ -16,8 +16,8 @@ export default function HealthManagement() {
             <h3 className="text-xl font-semibold mb-2">Health Suggestions</h3>
             <p className="text-red-100 mb-4">Get personalized health suggestions based on your metrics and diet.</p>
             <Button 
-              onClick={() => router.push('/health-suggestions')}
-              className="bg-white text-red-600 hover:bg-red-100"
+              onClick={() => router.push('/health-food')}
+              className=" text-red-600 hover:bg-blue-600"
             >
               Get Suggestions
             </Button>
@@ -27,7 +27,7 @@ export default function HealthManagement() {
             <p className="text-blue-100 mb-4">Set up reminders for your medications.</p>
             <Button 
               onClick={() => router.push('/medication-notifications')}
-              className="bg-white text-blue-600 hover:bg-blue-100"
+              className=" text-blue-600 hover:bg-blue-100 "
             >
               Set Notifications
             </Button>
