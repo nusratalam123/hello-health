@@ -16,15 +16,31 @@ interface HealthData {
 }
 
 export default function HealthDashboard() {
-  const [healthData, setHealthData] = useState<HealthData | null>(null)
+  const [healthData, setHealthData] = useState<HealthData>({
+    age: 0,
+    cholesterol: 0,
+    bloodPressure: '0/0',
+    diabetes: false,
+    temperature: 0,
+    heartRate: 0,
+  })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const fetchHealthData = async () => {
       try {
         const token = localStorage.getItem('token');
         console.log("token",token)
+        if (!token) {
+          console.log("User not logged in.");
+          setIsLoggedIn(false);
+          setLoading(false);
+          return;
+        }
+  
+        setIsLoggedIn(true);
         let userID: string | undefined; // Declare userID once
 
         if (token) {
@@ -37,19 +53,13 @@ export default function HealthDashboard() {
           console.error("User ID is undefined. Cannot make the request.");
           throw new Error("User ID not found in token");
         }
-        const response = await axios.get(`http://localhost:7000/api/health-data/single/${userID}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
-          }
-        })
+        const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
 
-        //console.log("response",response)
+        // console.log("response",response)
 
-        if (response.status === 200 && response.data.data.length > 0) {
-            const healthInfo = response.data.data[0] 
-            console.log("healthdata",response.data.data[0])
+        if (response.data.healthData) {
+            const healthInfo = response.data.healthData
+            // console.log("healthdata",response.data.healthData)
             setHealthData({
               age: healthInfo.age.toString(),
               cholesterol: healthInfo.cholesterol.toString(),
@@ -123,7 +133,13 @@ export default function HealthDashboard() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-4">Your Health Dashboard</h2>
-          <p className="text-gray-600">Age: {healthData.age} years | {healthData.diabetes ? 'Diabetic' : 'Non-Diabetic'}</p>
+          {isLoggedIn ? (
+            <p className="text-gray-600">
+              Age: {healthData.age} years | {healthData.diabetes ? 'Diabetic' : 'Non-Diabetic'}
+            </p>
+          ) : (
+            <p className="text-gray-600">Please log in to view your health data.</p>
+          )}
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {metrics.map((metric, index) => (
@@ -131,11 +147,13 @@ export default function HealthDashboard() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <metric.icon className="h-8 w-8 text-red-600" />
-                  <span className={`text-sm px-2 py-1 rounded ${
-                    metric.color === 'green' 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-yellow-100 text-yellow-700'
-                  }`}>
+                  <span
+                    className={`text-sm px-2 py-1 rounded ${
+                      metric.color === 'green'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-yellow-100 text-yellow-700'
+                    }`}
+                  >
                     {metric.status}
                   </span>
                 </div>
