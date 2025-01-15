@@ -1,42 +1,66 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Navbar from "@/components/navbar"
-import { SearchBar } from "@/components/search-bar"
-import { Card, CardContent } from "@/components/ui"
-import { Button } from "@/components/ui"
-import Image from "next/image"
+import { useState, useEffect } from 'react';
+import Navbar from "@/components/navbar";
+import { SearchBar } from "@/components/search-bar";
+import { Card, CardContent, Button } from "@/components/ui";
+import Image from "next/image";
+import axios from 'axios';
 
-// Mock data for events
-const events = Array(24).fill(null).map((_, i) => ({
-  id: i + 1,
-  title: `Health Seminar ${i + 1}`,
-  date: new Date(2023, 6, i + 1).toLocaleDateString(),
-  location: 'City Medical Center',
-  image: '/placeholder.svg',
-}))
+interface Event {
+  _id: string;
+  title: string;
+  date: string;
+  location: string;
+  image: string;
+}
 
 export default function EventsPage() {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [filteredEvents, setFilteredEvents] = useState(events)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const eventsPerPage = 12
-  const totalPages = Math.ceil(filteredEvents.length / eventsPerPage)
+  const eventsPerPage = 12;
+  const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
+
+  // Fetch events from the backend
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:7000/api/event/list');
+        setEvents(response.data.events);
+        setFilteredEvents(response.data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const handleSearch = (searchParams: { location: string; hospital: string; designation: string }) => {
-    const filtered = events.filter(event => 
-      event.location.toLowerCase().includes(searchParams.location.toLowerCase()) ||
-      event.location.toLowerCase().includes(searchParams.hospital.toLowerCase())
-      // Note: We don't have designation data for events, so we're not filtering by it
-    )
-    setFilteredEvents(filtered)
-    setCurrentPage(1)
-  }
+    const filtered = events.filter(event =>
+      event.location.toLowerCase().includes(searchParams.location.toLowerCase())
+    );
+    setFilteredEvents(filtered);
+    setCurrentPage(1);
+  };
 
   const paginatedEvents = filteredEvents.slice(
     (currentPage - 1) * eventsPerPage,
     currentPage * eventsPerPage
-  )
+  );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading events...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -46,13 +70,13 @@ export default function EventsPage() {
         <SearchBar onSearch={handleSearch} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {paginatedEvents.map((event) => (
-            <Card key={event.id} className="overflow-hidden">
+            <Card key={event._id} className="overflow-hidden">
               <div className="relative h-48">
                 <Image src={event.image} alt={event.title} fill className="object-cover" />
               </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold text-lg">{event.title}</h3>
-                <p className="text-sm text-gray-600">{event.date}</p>
+                <p className="text-sm text-gray-600">{new Date(event.date).toLocaleDateString()}</p>
                 <p className="text-sm text-gray-600">{event.location}</p>
               </CardContent>
             </Card>
@@ -74,6 +98,5 @@ export default function EventsPage() {
         )}
       </main>
     </div>
-  )
+  );
 }
-
