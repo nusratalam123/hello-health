@@ -4,8 +4,10 @@ import { Button } from "@/components/ui"
 import { Input } from "@/components/ui"
 import { Textarea } from "@/components/ui"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui"
+import { useRouter } from 'next/navigation';
 
 export default function Appointment() {
+  const router = useRouter();
   return (
     <section id="appointments" className="py-20">
       <div className="container mx-auto px-4">
@@ -22,10 +24,14 @@ export default function Appointment() {
                 <Input placeholder="Preferred Date" type="date" />
               </div>
               <Textarea placeholder="Additional Information" className="min-h-[100px]" />
-              <Button className="w-full bg-red-600 hover:bg-red-700">
-                Book Appointment
-              </Button>
+              
             </form>
+            <Button
+                 onClick={() => router.push('/appointments')}
+                 className="w-full bg-red-600 hover:bg-red-700"
+                >
+                  Book Appointment
+              </Button>
           </CardContent>
         </Card>
       </div>
