@@ -32,7 +32,6 @@ export default function HealthDashboard() {
     const fetchHealthData = async () => {
       try {
         const token = localStorage.getItem('token');
-        console.log("token",token)
         if (!token) {
           console.log("User not logged in.");
           setIsLoggedIn(false);
@@ -41,44 +40,50 @@ export default function HealthDashboard() {
         }
   
         setIsLoggedIn(true);
-        let userID: string | undefined; // Declare userID once
-
-        if (token) {
-          const decodedToken = jwtDecode(token) as { id: string };
-          userID = decodedToken.id; // Assign to the existing userID variable
-          console.log("Decoded UserID:", userID);
-        }
-
+        const decodedToken = jwtDecode(token) as { id: string };
+        const userID = decodedToken?.id;
+  
         if (!userID) {
-          console.error("User ID is undefined. Cannot make the request.");
-          throw new Error("User ID not found in token");
+          console.error("User ID is undefined.");
+          throw new Error("User ID not found in token.");
         }
-        const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
-
-        // console.log("response",response)
-
+  
+        const response = await axios.get(
+          `http://localhost:7000/api/health-suggestion/user/${userID}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
         if (response.data.healthData) {
-            const healthInfo = response.data.healthData
-            // console.log("healthdata",response.data.healthData)
-            setHealthData({
-              age: healthInfo.age.toString(),
-              cholesterol: healthInfo.cholesterol.toString(),
-              bloodPressure: healthInfo.bloodPressure.toString(),
-              diabetes: healthInfo.diabetes ,
-              temperature: healthInfo.temperature.toString(),
-              heartRate: healthInfo.heartRate.toString()
-            })
+          const healthInfo = response.data.healthData;
+          setHealthData({
+            age: healthInfo.age,
+            cholesterol: healthInfo.cholesterol,
+            bloodPressure: healthInfo.bloodPressure,
+            diabetes: healthInfo.diabetes,
+            temperature: healthInfo.temperature,
+            heartRate: healthInfo.heartRate,
+          });
         }
       } catch (err) {
-        setError('Failed to load health data')
-        console.error(err)
+        if (axios.isAxiosError(err) && err.response?.status === 403) {
+          setError('Access forbidden. Please log in again.');
+          localStorage.removeItem('token'); // Clear the token
+          setIsLoggedIn(false);
+        } else {
+          setError('Failed to load health data');
+        }
+        console.error(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-
-    fetchHealthData()
-  }, [])
+    };
+  
+    fetchHealthData();
+  }, []);
 
   if (loading) {
     return (
