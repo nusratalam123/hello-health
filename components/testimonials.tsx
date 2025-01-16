@@ -15,7 +15,7 @@ interface Testimonial {
 
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [visibleCount, setVisibleCount] = useState(6); // Number of testimonials to show initially
+  const [visibleCount, setVisibleCount] = useState(3); // Show first 3 testimonials
   const router = useRouter();
 
   useEffect(() => {
@@ -31,9 +31,9 @@ export default function Testimonials() {
     fetchTestimonials();
   }, []);
 
-  const handleLoadMore = () => {
-    setVisibleCount((prevCount) => prevCount + 6); // Show 6 more testimonials each time
-  };
+  // const handleLoadMore = () => {
+  //   setVisibleCount((prevCount) => prevCount + 3); // Show 3 more testimonials on each click
+  // };
 
   return (
     <section className="py-20 bg-white">
@@ -54,20 +54,20 @@ export default function Testimonials() {
           ))}
         </div>
 
-        {visibleCount < testimonials.length && (
+        {/* {visibleCount < testimonials.length && (
           <div className="text-center mt-8">
             <Button onClick={handleLoadMore} className="bg-red-600 hover:bg-red-700">
               Load More
             </Button>
           </div>
-        )}
+        )} */}
 
         <div className="text-center mt-8">
           <Button
-            onClick={() => router.push('/add-testimonial')}
+            onClick={() => router.push('/testimonials')}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            Add Your Testimonial
+            All Testimonials
           </Button>
         </div>
       </div>
