@@ -61,11 +61,15 @@ export default function HealthSuggestionsPage() {
   // Fetch existing health data on component mount
   useEffect(() => {
     const fetchHealthData = async () => {
+      console.log("userID1",userID)
+   
       if (!userID) return;
       try {
-        // console.log("userID1",userID)
+        console.log("userID1",userID)
         const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
+        console.log("response",response.data.healthData)
         if (response.data.healthData) {
+
           setHealthData(response.data.healthData);
           // setCondition(response.data.healthData.condition);
           // setFeedback(response.data.feedback);
@@ -73,7 +77,7 @@ export default function HealthSuggestionsPage() {
           // setRiskyFoods(response.data.riskyFoods);
         }
       } catch (error) {
-        console.error('Error fetching health data:', error);
+        console.log('Error fetching health data:', error);
       } finally {
         setIsLoading(false);
       }
