@@ -34,3 +34,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Data set for food detection was taken from kaggle. Link: https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition
+files related to food detection: requirement.txt, training_hist.json, Testing_fruit_veg_recognition.ipynb, Training_fruit_vegetable.ipynb. deploy on collab, create api key, enjoy
