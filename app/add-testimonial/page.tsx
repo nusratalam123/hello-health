@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Textarea, Label, Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import Navbar from '@/components/navbar';
 
 export default function AddTestimonialPage() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function AddTestimonialPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar></Navbar>
       <main className="container mx-auto px-4 pt-24 pb-12">
         <div className="max-w-2xl mx-auto">
           <Card className="shadow-lg">
