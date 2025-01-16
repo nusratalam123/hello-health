@@ -9,6 +9,8 @@ import Testimonials from "@/components/testimonials"
 import Footer from "@/components/footer"
 import Link from "next/link"
 import { Button } from '../components/ui'
+import ProductsPage from "@/components/product"
+// import MedicationSchedule from "@/components/medication-schedule"
 
 export default function Home() {
   return (
@@ -18,6 +20,8 @@ export default function Home() {
         <Hero />
         <Services />
         <HealthManagement />
+        <ProductsPage></ProductsPage>
+        {/* <MedicationSchedule></MedicationSchedule> */}
         <Events />
         <div className="text-center mt-8">
           <Link href="/events">
