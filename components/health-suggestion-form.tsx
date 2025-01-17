@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Button, Input, Textarea, Label } from '@/components/ui'
+import axios from 'axios'
 
 export function HealthSuggestionForm() {
   const [healthData, setHealthData] = useState({
@@ -29,18 +30,18 @@ export function HealthSuggestionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch('http://localhost:5000/api/health/suggestion', {
+      const response = await axios.post('http://localhost:5000/api/health/suggestion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(healthData),
       })
-      const data = await response.json()
+      const data = response.data
       setSuggestion(data.suggestion)
 
       // Submit health data
-      await fetch('http://localhost:5000/api/health/submit', {
+      await axios.post('http://localhost:5000/api/health/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
