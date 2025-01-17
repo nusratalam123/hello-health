@@ -49,7 +49,7 @@ export default function HealthDashboard() {
         }
   
         const response = await axios.get(
-          ` hello-health-backend.vercel.app/api/health-suggestion/user/${userID}`,
+          `hello-health-backend.vercel.app/api/health-suggestion/user/${userID}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

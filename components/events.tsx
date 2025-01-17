@@ -21,7 +21,7 @@ export default function Events() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get(' hello-health-backend.vercel.app/api/event/list');
+        const response = await axios.get('https://hello-health-backend.vercel.app/api/event/list');
         setEvents(response.data.events.slice(0, 3)); // Show only the first 3 events
         setIsLoading(false);
       } catch (error) {
