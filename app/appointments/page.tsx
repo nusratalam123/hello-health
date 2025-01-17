@@ -30,7 +30,7 @@ export default function AppointmentsPage() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get(' hello-health-backend.vercel.app/api/doctor/list');
+        const response = await axios.get('https://hello-health-backend.vercel.app/api/doctor/list');
         setDoctors(response.data.doctors);
         setFilteredDoctors(response.data.doctors); // Set filteredDoctors initially to all doctors
       } catch (error) {

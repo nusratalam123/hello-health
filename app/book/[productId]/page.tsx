@@ -38,7 +38,7 @@ export default function BookingPage() {
 
       if (productId) {
         try {
-          const response = await axios.get(` hello-health-backend.vercel.app/api/product/single/${productId}`);
+          const response = await axios.get(`https://hello-health-backend.vercel.app/api/product/single/${productId}`);
           setProduct(response.data.product);
         } catch (err) {
           console.error('Error fetching product:', err);
@@ -63,7 +63,7 @@ export default function BookingPage() {
     if (!product) return;
 
     try {
-        await axios.post(' hello-health-backend.vercel.app/api/order/book', {
+        await axios.post('https://hello-health-backend.vercel.app/api/order/book', {
         productId: product._id,
         ...formData
       });
