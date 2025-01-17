@@ -97,7 +97,13 @@ export function HealthSuggestionForm() {
           <Textarea className="mt-1" value={suggestion} readOnly rows={4} />
         </div>
       )}
+      <div>
+    {foodImage && (
+      <img src={URL.createObjectURL(foodImage)} alt="Uploaded Image" />
+    )}
+  </div>
     </form>
+    
   )
 }
 

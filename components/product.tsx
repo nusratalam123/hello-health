@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Button } from "@/components/ui"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui"
-import Navbar from "@/components/navbar"
 import Image from 'next/image'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'

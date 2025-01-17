@@ -15,7 +15,7 @@ interface Testimonial {
 
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [visibleCount, setVisibleCount] = useState(3); // Show first 3 testimonials
+  const [visibleCount] = useState(3); // Show first 3 testimonials
   const router = useRouter();
 
   useEffect(() => {
