@@ -36,7 +36,7 @@ const BookAppointmentPage: React.FC = () => {  // Ensure it's a React functional
     // Fetch doctor details using doctorId
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get(`hello-health-backend.vercel.app/api/doctor/single/${doctorId}`);
+        const response = await axios.get(`https://hello-health-backend.vercel.app/api/doctor/single/${doctorId}`);
 
         // const response = await axios.get(`http://localhost:7000/api/doctor/single/${doctorId}`);
         console.log("doctor",response.data.doctor);

@@ -26,7 +26,7 @@ export default function AddTestimonialPage() {
 
     try {
 
-      await axios.post('hello-health-backend.vercel.app/testimonial/add', formData);
+      await axios.post('https://hello-health-backend.vercel.app/api/testimonial/add', formData);
       // await axios.post('http://localhost:7000/api/testimonial/add', formData);
       alert('Testimonial added successfully!');
       router.push('/testimonials');
