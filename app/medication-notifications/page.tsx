@@ -7,15 +7,6 @@ import Navbar from "@/components/navbar";
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
-const token = localStorage.getItem('token'); // Assume token is stored in localStorage
-let userID: string | undefined; // Declare userID once
-
-  if (token) {
-    const decodedToken = jwtDecode(token) as { id: string };
-    userID = decodedToken.id; // Assign to the existing userID variable
-    console.log("Decoded UserID:", userID);
-  }
-
 // Define the Medication type
 type Medication = {
   name: string;
@@ -23,21 +14,25 @@ type Medication = {
 };
 
 // Function to fetch medications from the backend
-const fetchMedications = async (setMedications: (medications: Medication[]) => void): Promise<void> => {
+const fetchMedications = async (
+  userID: string,
+  setMedications: (medications: Medication[]) => void
+): Promise<void> => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.get(`http://localhost:7000/api/medications/list/${userID}`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     setMedications(response.data.medications);
   } catch (error) {
-    console.log('Error fetching medications:',error);
+    console.log('Error fetching medications:', error);
   }
 };
 
 // Function to add medications to the backend
 const addMedications = async (
+  userID: string,
   medications: Medication[],
   setMedications: (medications: Medication[]) => void
 ): Promise<void> => {
@@ -50,7 +45,7 @@ const addMedications = async (
     );
 
     alert('Medications added successfully!');
-    fetchMedications(setMedications);
+    fetchMedications(userID, setMedications);
   } catch (error) {
     console.error('Error adding medications:', error);
   }
@@ -60,10 +55,27 @@ export default function MedicationNotificationsPage() {
   const router = useRouter();
   const [medications, setMedications] = useState<Medication[]>([]);
   const [newMedication, setNewMedication] = useState<Medication>({ name: '', times: [''] });
+  const [userID, setUserID] = useState<string | null>(null);
 
+  // Retrieve token and decode user ID on the client side
   useEffect(() => {
-    fetchMedications(setMedications);
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      try {
+        const decodedToken = jwtDecode<{ id: string }>(storedToken);
+        setUserID(decodedToken.id);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
   }, []);
+
+  // Fetch medications when userID is available
+  useEffect(() => {
+    if (userID) {
+      fetchMedications(userID, setMedications);
+    }
+  }, [userID]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index?: number) => {
     const { name, value } = e.target;
@@ -88,8 +100,8 @@ export default function MedicationNotificationsPage() {
 
   const handleAddMedication = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newMedication.name && newMedication.times.length > 0) {
-      addMedications([...medications, newMedication], setMedications);
+    if (newMedication.name && newMedication.times.length > 0 && userID) {
+      addMedications(userID, [...medications, newMedication], setMedications);
       setNewMedication({ name: '', times: [''] });
     }
   };
