@@ -30,7 +30,7 @@ export function HealthSuggestionForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await axios.post('http://localhost:5000/api/health/suggestion', {
+      const response = await axios.post(' hello-health-backend.vercel.app/api/health/suggestion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export function HealthSuggestionForm() {
       setSuggestion(data.suggestion)
 
       // Submit health data
-      await axios.post('http://localhost:5000/api/health/submit', {
+      await axios.post(' hello-health-backend.vercel.app/api/health/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

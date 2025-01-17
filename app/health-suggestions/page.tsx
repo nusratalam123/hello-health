@@ -43,7 +43,7 @@ export default function HealthSuggestionsPage() {
           console.error("User ID is undefined. Cannot make the request.");
           throw new Error("User ID not found in token");
         }
-        const response = await axios.get(`http://localhost:7000/api/health-data/single/${userID}`, {
+        const response = await axios.get(` hello-health-backend.vercel.app/api/health-data/single/${userID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export default function HealthSuggestionsPage() {
         formData.append('userID', decodedToken.userId);
       }
 
-      const response = await axios.post('http://localhost:7000/api/health-data/submit', {
+      const response = await axios.post(' hello-health-backend.vercel.app/api/health-data/submit', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage

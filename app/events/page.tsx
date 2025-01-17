@@ -28,7 +28,7 @@ export default function EventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:7000/api/event/list');
+        const response = await axios.get(' hello-health-backend.vercel.app/api/event/list');
         setEvents(response.data.events);
         setFilteredEvents(response.data.events);
       } catch (error) {

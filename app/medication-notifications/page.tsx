@@ -20,7 +20,7 @@ const fetchMedications = async (
 ): Promise<void> => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.get(`http://localhost:7000/api/medications/list/${userID}`, {
+    const response = await axios.get(` hello-health-backend.vercel.app/api/medications/list/${userID}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -39,7 +39,7 @@ const addMedications = async (
   try {
     const token = localStorage.getItem('token');
     await axios.post(
-      `http://localhost:7000/api/medications/add/${userID}`,
+      ` hello-health-backend.vercel.app/api/medications/add/${userID}`,
       { medications },
       { headers: { Authorization: `Bearer ${token}` } }
     );

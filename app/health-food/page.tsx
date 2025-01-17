@@ -66,7 +66,7 @@ export default function HealthSuggestionsPage() {
 
     const fetchHealthData = async () => {
       try {
-        const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
+        const response = await axios.get(` hello-health-backend.vercel.app/api/health-suggestion/user/${userID}`);
         if (response.data.healthData) {
           setHealthData(response.data.healthData);
         }
@@ -88,7 +88,7 @@ export default function HealthSuggestionsPage() {
     }
 
     try {
-      const response = await axios.post('http://localhost:7000/api/health-suggestion/analyze', {
+      const response = await axios.post(' hello-health-backend.vercel.app/api/health-suggestion/analyze', {
         userID,
         ...healthData,
       });

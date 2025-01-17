@@ -25,7 +25,7 @@ export default function ProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:7000/api/product/list')
+        const response = await axios.get(' hello-health-backend.vercel.app/api/product/list')
         setProducts(response.data.products)
         setLoading(false)
       } catch (err: unknown) {
