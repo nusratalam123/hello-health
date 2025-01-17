@@ -88,7 +88,7 @@ export default function HealthSuggestionsPage() {
     }
 
     try {
-      const response = await axios.post(' hello-health-backend.vercel.app/api/health-suggestion/analyze', {
+      const response = await axios.post('https://hello-health-backend.vercel.app/api/health-suggestion/analyze', {
         userID,
         ...healthData,
       });

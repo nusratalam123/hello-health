@@ -50,7 +50,7 @@ export default function RegisterPage() {
     if (validateForm()) {
       setIsLoading(true)
       try {
-        const response = await axios.post(" hello-health-backend.vercel.app/api/auth/signup", formData, {
+        const response = await axios.post("https://hello-health-backend.vercel.app/api/auth/signup", formData, {
           headers: {
             "Content-Type": "application/json",
           },
