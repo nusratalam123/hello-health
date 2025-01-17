@@ -8,6 +8,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import Navbar from '@/components/navbar';
 import { jwtDecode } from 'jwt-decode';
+import Link from 'next/link';
 
 // Define types for health metrics and health condition
 interface HealthMetrics {
@@ -231,7 +232,19 @@ export default function HealthSuggestionsPage() {
         <h1 className="text-3xl font-bold text-center mb-8">Health Analysis & Food Suggestions</h1>
 
         <Card className="max-w-2xl mx-auto mb-8">
+          
           <CardHeader>
+          <div className="flex items-center gap-4 mb-10 pt-6 ml-auto">
+          {/* Add other links/buttons here if needed */}
+          <Link href="/food-image">
+            <Button
+              variant="outline"
+              className="border-red-500 text-red-500 px-6 py-2 hover:bg-gray-700 hover:text-white"
+            >
+              Enter Food Image If you want to get food suggestions can you it or not. 
+            </Button>
+          </Link>
+        </div>
             <CardTitle>Enter Your Health Metrics</CardTitle>
           </CardHeader>
           <CardContent>
