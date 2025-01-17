@@ -6,8 +6,8 @@ import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label, Switch 
 import { AlertTriangle, Heart, ThumbsUp } from 'lucide-react';
 import Image from 'next/image';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import Navbar from '@/components/navbar';
+import { jwtDecode } from 'jwt-decode';
 
 // Define types for health metrics and health condition
 interface HealthMetrics {
@@ -26,21 +26,8 @@ type HealthCondition = 'good' | 'moderate' | 'bad';
 
 export default function HealthSuggestionsPage() {
   const router = useRouter();
-  const token = localStorage.getItem('token');
-  console.log("token",token)
-  let userID: string | undefined; // Declare userID once
-
-  if (token) {
-    const decodedToken = jwtDecode(token) as { id: string };
-    userID = decodedToken.id; // Assign to the existing userID variable
-    console.log("Decoded UserID:", userID);
-  }
-
-  if (!userID) {
-    console.error("User ID is undefined. Cannot make the request.");
-    throw new Error("User ID not found in token");
-  }
-
+  const [token, setToken] = useState<string | null>(null);
+  const [userID, setUserID] = useState<string | null>(null);
   const [healthData, setHealthData] = useState<HealthMetrics>({
     age: 0,
     cholesterol: 0,
@@ -58,26 +45,32 @@ export default function HealthSuggestionsPage() {
   const [riskyFoods, setRiskyFoods] = useState<{ name: string; image: string; benefits: string }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch existing health data on component mount
+  // Fetch token and decode user ID on the client side
   useEffect(() => {
-    const fetchHealthData = async () => {
-      console.log("userID1",userID)
-   
-      if (!userID) return;
+    const storedToken = localStorage.getItem('token');
+    setToken(storedToken);
+    if (storedToken) {
       try {
-        console.log("userID1",userID)
-        const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
-        console.log("response",response.data.healthData)
-        if (response.data.healthData) {
+        const decodedToken = jwtDecode(storedToken) as { id: string };
+        setUserID(decodedToken.id);
+        console.log('Decoded UserID:', decodedToken.id);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, []);
 
+  useEffect(() => {
+    if (!userID) return;
+
+    const fetchHealthData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:7000/api/health-suggestion/user/${userID}`);
+        if (response.data.healthData) {
           setHealthData(response.data.healthData);
-          // setCondition(response.data.healthData.condition);
-          // setFeedback(response.data.feedback);
-          // setGoodFoods(response.data.goodFoods);
-          // setRiskyFoods(response.data.riskyFoods);
         }
       } catch (error) {
-        console.log('Error fetching health data:', error);
+        console.error('Error fetching health data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -86,9 +79,13 @@ export default function HealthSuggestionsPage() {
     fetchHealthData();
   }, [userID]);
 
-  // Submit or update health data
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userID) {
+      console.error('User ID is undefined. Cannot submit data.');
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:7000/api/health-suggestion/analyze', {
         userID,
@@ -106,6 +103,22 @@ export default function HealthSuggestionsPage() {
       alert('Failed to analyze health data. Please try again.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading health data...</p>
+      </div>
+    );
+  }
+
+  if (!token || !userID) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Please log in to access your health data.</p>
+      </div>
+    );
+  }
 
   const getConditionDisplay = () => {
     if (!condition) return null;

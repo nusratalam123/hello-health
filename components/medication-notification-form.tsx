@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button, Input, Label } from '@/components/ui'
+import axios from 'axios';
 
 export function MedicationNotificationForm() {
   const [medications, setMedications] = useState<{ name: string; time: string }[]>([])
@@ -13,8 +14,8 @@ export function MedicationNotificationForm() {
 
   const fetchMedications = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/medication/list')
-      const data = await response.json()
+      const response = await axios.get('http://localhost:5000/api/medication/list')
+      const data = response.data
       setMedications(data)
     } catch (error) {
       console.error('Error fetching medications:', error)

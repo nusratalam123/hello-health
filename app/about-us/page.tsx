@@ -4,6 +4,8 @@ import Navbar from "@/components/navbar"
 import { Heart, Award, Users, Clock, Phone, Mail, MapPin } from 'lucide-react'
 import Footer from '@/components/footer'
 
+
+
 export default function AboutPage() {
   const stats = [
     {
@@ -51,12 +53,6 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <Image
-            src="/placeholder.svg?height=500&width=1920"
-            alt="Medical team"
-            fill
-            className="object-cover"
-          />
           <div className="bg-red-50 py-20" />
         </div>
         <div className="relative container mx-auto px-4 text-center text-black">
