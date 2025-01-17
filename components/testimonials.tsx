@@ -21,7 +21,7 @@ export default function Testimonials() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await axios.get(' hello-health-backend.vercel.app/api/testimonial/list');
+        const response = await axios.get("hello-health-backend.vercel.app/api/testimonial/list");
         setTestimonials(response.data.testimonials);
       } catch (error) {
         console.error('Error fetching testimonials:', error);
