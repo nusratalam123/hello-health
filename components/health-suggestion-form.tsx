@@ -99,6 +99,7 @@ export function HealthSuggestionForm() {
       )}
       <div>
     {foodImage && (
+      // eslint-disable-next-line @next/next/no-img-element
       <img src={URL.createObjectURL(foodImage)} alt="Uploaded Image" />
     )}
   </div>
