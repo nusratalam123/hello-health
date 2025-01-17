@@ -113,7 +113,7 @@ export default function HealthSuggestionsPage() {
         formData.append('userID', decodedToken.userId);
       }
 
-      const response = await fetch('http://localhost:7000/api/health-data/submit', {
+      const response = await axios.post('http://localhost:7000/api/health-data/submit', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
@@ -121,7 +121,7 @@ export default function HealthSuggestionsPage() {
         body: formData
       })
 
-      const data = await response.json()
+      const data = response.data
 
       // Update states with the response data
       setSuggestion(data.message)
