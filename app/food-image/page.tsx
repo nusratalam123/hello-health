@@ -40,7 +40,7 @@ export default function HealthSuggestionsPage() {
 
     try {
       setIsUploading(true);
-      const res = await axios.post('http://localhost:7000/api/food-analysis/upload-food', formData, {
+      const res = await axios.post('https://localhost:7000/api/food-analysis/upload-food', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
