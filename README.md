@@ -1,3 +1,32 @@
+## Getting frontend code 
+link:-https://github.com/nusratalam123/hello-health
+## Getting backend code 
+link:-https://github.com/nusratalam123/hello-health-backend-development
+
+## PostMan API Documentation
+
+link:-https://craftycode.postman.co/workspace/nusrat-alam-Workspace~84e41a97-872f-4921-8cd7-47cc9e2715c1/collection/15092032-671ba380-2ec4-4c9f-b011-71702ea970cd?action=share&creator=15092032&active-environment=15092032-f3ed8482-c99a-4785-b611-5077aed4982c
+
+or 
+
+link:https://craftycode.postman.co/workspace/nusrat-alam-Workspace~84e41a97-872f-4921-8cd7-47cc9e2715c1/documentation/15092032-671ba380-2ec4-4c9f-b011-71702ea970cd
+
+## Frontend and Backend Technical Documentation
+link:-https://docs.google.com/document/d/1zRs9RKcSWZtVIM-2rskcUGK0Iy_bRoNQN3ToWNT8qU4/edit?usp=sharing
+
+## vedio Documentationsu
+
+link:-
+
+## backend live link
+hello-health-backend.vercel.app
+
+or
+
+https://hello-health-backend-fup6tt33a-nusrat-alams-projects.vercel.app/
+
+## Model Documentation
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -34,6 +63,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-Data set for food detection was taken from kaggle. Link: https://www.kaggle.com/datasets/kritikseth/fruit-and-vegetable-image-recognition
-files related to food detection: requirement.txt, training_hist.json, Testing_fruit_veg_recognition.ipynb, Training_fruit_vegetable.ipynb. deploy on collab, create api key, enjoy
