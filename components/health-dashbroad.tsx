@@ -48,15 +48,8 @@ export default function HealthDashboard() {
           throw new Error("User ID not found in token.");
         }
   
-        const response = await axios.get(
-          `https://hello-health-backend.vercel.app/api/health-suggestion/user/${userID}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-  
+        const response = await axios.get(`https://hello-health-backend.vercel.app/api/health-suggestion/user/${userID}`);
+
         if (response.data.healthData) {
           const healthInfo = response.data.healthData;
           setHealthData({
